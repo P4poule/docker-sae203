@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 
 const PORT = 3000;
 
-app.use(express.static('client'));
+app.use(express.static('public'));
 
 let rooms = {};
 
@@ -38,6 +38,6 @@ io.on('connection', (socket) => {
     });
 });
 
-http.listen(PORT, () => {
-    console.log(`Serveur lancé sur http://localhost:${PORT}`);
+http.listen(PORT, '0.0.0.0', () => {
+  console.log(`Serveur lancé sur http://0.0.0.0:${PORT}`);
 });

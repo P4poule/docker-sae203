@@ -1,25 +1,25 @@
-# Utiliser Debian officiel
+# Prendre Debian comme demandé
 FROM debian:latest
 
-# Mettre à jour Debian et installer Node.js + npm
-RUN apt-get update && apt-get install -y curl \
-    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Installer Node.js et npm
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
 
-# Créer un dossier pour l'app
+# Créer un dossier pour l'application
 WORKDIR /app
 
-# Copier le package.json et installer les dépendances
-COPY package.json package-lock.json ./
+# Copier les fichiers package.json + package-lock.json (s'il existe)
+COPY package.json ./
+
+# Installer les dépendances
 RUN npm install
 
-# Copier tous les fichiers
+# Copier tout le reste (public, server.js etc.)
 COPY . .
 
-# Exposer le port du serveur (3000)
-EXPOSE 3000
+# Exposer le port utilisé par Node.js
+EXPOSE 8023
 
-# Commande pour démarrer ton serveur
+# Commande pour lancer ton serveur Node.js
 CMD ["node", "server.js"]
