@@ -2,40 +2,117 @@
 <html lang="fr">
 
 <head>
-	<meta charset="UTF‑8">
-	<meta name="viewport" content="width=device‑width,initial‑scale=1.0">
-	<title>Accueil</title>
-	<link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF‑8">
+    <meta name="viewport" content="width=device‑width,initial‑scale=1.0">
+    <title>Présentation générale</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-	<!-- 1) On place le DIV du curseur immuablement -->
-	<div class="cursor"></div>
+    <!-- 1) On place le DIV du curseur immuablement -->
+    <div class="cursor"></div>
 
-	<!-- 2) Nav identique partout -->
-	<nav class="glass-nav">
-		<ul>
-			<li><a href="index.html">Accueil</a></li>
-			<li><a href="technique.html">Choix Techniques</a></li>
-			<li><a href="installation.html">Installation</a></li>
-			<li><a href="equipe.html">Équipe</a></li>
-		</ul>
-	</nav>
+    <!-- 2) Nav identique partout -->
+    <nav class="glass-nav">
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Présentation générale</a></li>
+            <li><a href="serveur.html"><i class="fas fa-server"></i> Fonctionnement côté Serveur (server.js)</a></li>
+            <li><a href="client.html"><i class="fas fa-code"></i> Fonctionnement côté Client (snake.js + index.html)</a></li>
+            <li><a href="deploiement.html"><i class="fas fa-docker"></i> Déploiement et Fonctionnement Docker</a></li>
+            <li><a href="equipe.html"><i class="fas fa-users"></i> Notre équipe</a></li>
+        </ul>
+    </nav>
 
-	<!-- 3) Contenu spécifique -->
-	<main>
-		<section class="content-section">
-			<!-- … */}
-		</section>
-	</main>
+    <!-- 3) Contenu spécifique -->
+    <main>
+        <section class="content-section">
+            <div class="card">
+                <h2><i class="fas fa-home"></i> Présentation générale</h2>
+                <p>Bienvenue sur le site officiel de notre projet Snake Multijoueur en Ligne ! Inspiré du classique jeu "Snake" connu de tous, notre projet permet à deux joueurs de s'affronter simultanément en temps réel, directement depuis leur navigateur web, sans aucune installation.</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-bullseye"></i>
+                        <h3>Objectifs du Projet</h3>
+                        <ul>
+                            <li>Expérience de jeu simple et intuitive</li>
+                            <li>Connexion rapide via codes de partie</li>
+                            <li>Synchronisation efficace des mouvements</li>
+                            <li>Serveur robuste pour parties simultanées</li>
+                            <li>Déploiement simplifié avec Docker</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Côté Client</h3>
+                        <p>Interface développée en HTML5, CSS3 et JavaScript avec Socket.io pour une communication temps réel.</p>
+                        <ul>
+                            <li>Connexion via code unique</li>
+                            <li>Contrôles intuitifs (flèches ou ZQSD)</li>
+                            <li>Affichage temps réel des positions</li>
+                            <li>Gestion des collisions côté serveur</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-server"></i>
+                        <h3>Côté Serveur</h3>
+                        <p>Développé en Node.js avec Express.js et Socket.io, conteneurisé avec Docker pour une meilleure portabilité.</p>
+                        <ul>
+                            <li>Gestion des salles de jeu</li>
+                            <li>Synchronisation parfaite</li>
+                            <li>Boucle de jeu optimisée</li>
+                            <li>Nettoyage automatique</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+			<div class="card">
+				<h2>Comment jouer ?</h2>
+				<ol>
+					<li>Créez ou rejoignez une partie avec un code.</li>
+					<li>Attendez qu'un adversaire se connecte.</li>
+					<li>Contrôlez votre serpent avec les flèches.</li>
+					<li><a href="http://di-docker:8023" class="btn-primary" target="_blank" rel="noopener noreferrer">Jouer !!</a></li>
+				</ol>
 
-	<!- 4) Footer identique -->
-	<footer>
-		<p>&copy; 2025 Projet SAE 2.03 – Tous droits réservés</p>
-	</footer>
+				
 
-	<!-- 5) Toujours en dernier -->
-	<script src="js/script.js"></script>
+			</div>
+
+
+            <div class="card">
+                <h2><i class="fas fa-lightbulb"></i> Ce que nous avons appris</h2>
+                <div class="learned-list">
+                    <div class="learned-item">
+                        <i class="fas fa-network-wired"></i>
+                        <p>Communication client-serveur en temps réel</p>
+                    </div>
+                    <div class="learned-item">
+                        <i class="fas fa-cogs"></i>
+                        <p>Logique de jeu robuste et réactive</p>
+                    </div>
+                    <div class="learned-item">
+                        <i class="fab fa-docker"></i>
+                        <p>Déploiement avec Docker</p>
+                    </div>
+                    <div class="learned-item">
+                        <i class="fas fa-bug"></i>
+                        <p>Résolution de problèmes complexes</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!- 4) Footer identique -->
+    <footer>
+        <p><strong>&copy; 2025 Projet SAE 2.03 - Snake Multijoueur</strong> – Tous droits réservés</p>
+    </footer>
+
+    <!-- 5) Toujours en dernier -->
+    <script src="js/script.js"></script>
 </body>
 
 </html>
