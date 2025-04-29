@@ -103,28 +103,33 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomCode) => {
         socket.join(roomCode);
-        console.log(`Joueur rejoint la room : ${roomCode}`);
-
+        console.log(`Joueur connecté à la room ${roomCode}`);
+    
         if (!rooms[roomCode]) {
             rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null };
         }
-
+    
         rooms[roomCode].players.push(socket.id);
-
+    
+        if (rooms[roomCode].players.length === 1) {
+            // Premier joueur -> envoyer attente
+            socket.emit('waiting');
+        }
+    
         if (rooms[roomCode].players.length === 2) {
+            // Deuxième joueur -> démarrer le jeu
             rooms[roomCode].snakes = createInitialSnakes();
             io.to(roomCode).emit('startGame', {
                 initialFood: rooms[roomCode].food,
                 initialSnakes: rooms[roomCode].snakes
             });
-
+    
             rooms[roomCode].interval = setInterval(() => {
                 updateRoom(roomCode);
             }, 150);
-        } else {
-            socket.emit('waiting');
         }
     });
+    
 
     socket.on('whoAmI', ({ roomCode }) => {
         const room = rooms[roomCode];
