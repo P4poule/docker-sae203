@@ -35,5 +35,5 @@ http://di-docker:8023
 Si jamais il y a un souci
 
     Le port 8023 est déjà pris ?
-    On peut simplement en choisir un autre :
+    On peut simplement en choisir un autre 
 
