@@ -1,12 +1,18 @@
-const socket = io();
+const socket = io('http://di-docker:8023');
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scale = 40;
+const rows = canvas.height / scale;
+const columns = canvas.width / scale;
 
-let snakes = [], food = {}, playing = false, roomCode = "", playerIndex = null;
+let snakes = [];
+let food = { x: 0, y: 0 };
+let playing = false;
+let roomCode = "";
+let playerIndex = null;
 
-document.getElementById('startButton').onclick = () => {
+document.getElementById('joinBtn').onclick = () => {
     roomCode = document.getElementById('roomCode').value.trim();
     if (roomCode !== "") {
         socket.emit('joinRoom', roomCode);
@@ -14,7 +20,7 @@ document.getElementById('startButton').onclick = () => {
 };
 
 socket.on('waiting', () => {
-    document.getElementById('status').innerText = "En attente d'un autre joueur...";
+    document.getElementById('waiting').innerText = "En attente d'un autre joueur...";
 });
 
 socket.on('startGame', ({ initialFood, initialSnakes }) => {
@@ -27,20 +33,6 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
     socket.emit('whoAmI', { roomCode });
 });
 
-socket.on('gameOver', ({ loserIndex, isDraw }) => {
-    playing = false;
-    let resultMessage = "";
-    if (isDraw) {
-        resultMessage = "Match nul !";
-    } else {
-        resultMessage = loserIndex === playerIndex ? "Tu as perdu !" : "Tu as gagné !";
-    }
-    alert(`Partie terminée : ${resultMessage}`);
-    document.getElementById('menu').style.display = 'block';
-    document.getElementById('gameCanvas').style.display = 'none';
-});
-
-
 socket.on('youAre', (index) => {
     playerIndex = index;
 });
@@ -50,24 +42,48 @@ socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
     food = newFood;
 });
 
+socket.on('gameOver', (result) => {
+    playing = false;
+    setTimeout(() => {
+        alert(result === 'draw' ? "Égalité !" : `${result === 'green' ? 'Vert' : 'Bleu'} a gagné !`);
+        location.reload();
+    }, 200);
+});
+
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.fillStyle = 'red';
     ctx.fillRect(food.x * scale, food.y * scale, scale, scale);
 
     snakes.forEach((snake, idx) => {
-        snake.body.forEach((seg, i) => {
+        snake.body.forEach((segment, i) => {
             ctx.fillStyle = idx === 0 ? (i === 0 ? 'darkgreen' : 'green') : (i === 0 ? 'darkblue' : 'blue');
-            ctx.fillRect(seg.x * scale, seg.y * scale, scale, scale);
+            ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale);
         });
     });
 
-    if (playing) requestAnimationFrame(gameLoop);
+    if (playing) {
+        requestAnimationFrame(gameLoop);
+    }
 }
 
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', (e) => {
     if (!playing || playerIndex === null) return;
-    const directions = { 'z':'Up','s':'Down','q':'Left','d':'Right','ArrowUp':'Up','ArrowDown':'Down','ArrowLeft':'Left','ArrowRight':'Right' };
-    const direction = directions[e.key];
-    if (direction) socket.emit('move', { roomCode, direction, playerIndex });
+
+    let direction = null;
+    switch (e.key) {
+        case 'z': direction = 'Up'; break;
+        case 's': direction = 'Down'; break;
+        case 'q': direction = 'Left'; break;
+        case 'd': direction = 'Right'; break;
+        case 'ArrowUp': direction = 'Up'; break;
+        case 'ArrowDown': direction = 'Down'; break;
+        case 'ArrowLeft': direction = 'Left'; break;
+        case 'ArrowRight': direction = 'Right'; break;
+    }
+
+    if (direction) {
+        socket.emit('move', { roomCode, direction, playerIndex });
+    }
 });

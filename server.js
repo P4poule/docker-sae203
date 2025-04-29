@@ -38,71 +38,64 @@ function moveSnake(snake) {
     snake.body.pop();
 }
 
+function checkCollision(snakes) {
+    const head0 = snakes[0].body[0];
+    const head1 = snakes[1].body[0];
+
+    // Tête contre tête
+    if (head0.x === head1.x && head0.y === head1.y) {
+        return 'draw';
+    }
+
+    // Collision avec soi-même
+    for (let i = 1; i < snakes[0].body.length; i++) {
+        if (head0.x === snakes[0].body[i].x && head0.y === snakes[0].body[i].y) return 'blue';
+    }
+    for (let i = 1; i < snakes[1].body.length; i++) {
+        if (head1.x === snakes[1].body[i].x && head1.y === snakes[1].body[i].y) return 'green';
+    }
+
+    // Collision avec l'autre serpent
+    for (let part of snakes[1].body) {
+        if (head0.x === part.x && head0.y === part.y) return 'blue';
+    }
+    for (let part of snakes[0].body) {
+        if (head1.x === part.x && head1.y === part.y) return 'green';
+    }
+
+    // Collision avec mur
+    if (head0.x < 0 || head0.x >= 20 || head0.y < 0 || head0.y >= 20) return 'blue';
+    if (head1.x < 0 || head1.x >= 20 || head1.y < 0 || head1.y >= 20) return 'green';
+
+    return null;
+}
+
 function updateRoom(roomCode) {
     const room = rooms[roomCode];
     if (!room) return;
 
     room.snakes.forEach(moveSnake);
 
-    let gameOver = false;
-    let loserIndex = null;
-    let isDraw = false;
-
-    const [snake1, snake2] = room.snakes;
-    const head1 = snake1.body[0];
-    const head2 = snake2.body[0];
-
-    // Vérifie si les têtes se touchent (match nul)
-    if (head1.x === head2.x && head1.y === head2.y) {
-        gameOver = true;
-        isDraw = true;
-    }
-
-    if (!isDraw) {
-        room.snakes.forEach((snake, i) => {
-            const head = snake.body[0];
-
-            // Collision avec murs
-            if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
-                gameOver = true;
-                loserIndex = i;
-            }
-
-            // Collision avec soi-même
-            snake.body.slice(1).forEach(segment => {
-                if (head.x === segment.x && head.y === segment.y) {
-                    gameOver = true;
-                    loserIndex = i;
-                }
-            });
-
-            // Collision avec l'autre serpent
-            const otherSnake = room.snakes[1 - i];
-            otherSnake.body.forEach(segment => {
-                if (head.x === segment.x && head.y === segment.y) {
-                    gameOver = true;
-                    loserIndex = i;
-                }
-            });
-
-            // Manger une pomme
-            if (head.x === room.food.x && head.y === room.food.y) {
-                snake.body.push({ ...snake.body[snake.body.length - 1] });
-                room.food = createFood();
-            }
-        });
-    }
-
-    if (gameOver) {
+    // Vérification collision
+    const result = checkCollision(room.snakes);
+    if (result) {
         clearInterval(room.interval);
-        io.to(roomCode).emit('gameOver', { loserIndex, isDraw });
-        delete rooms[roomCode];
-    } else {
-        io.to(roomCode).emit('updateGame', {
-            snakes: room.snakes,
-            food: room.food,
-        });
+        io.to(roomCode).emit('gameOver', result);
+        return;
     }
+
+    // Gestion de la nourriture
+    room.snakes.forEach(snake => {
+        if (snake.body[0].x === room.food.x && snake.body[0].y === room.food.y) {
+            snake.body.push({ ...snake.body[snake.body.length - 1] });
+            room.food = createFood();
+        }
+    });
+
+    io.to(roomCode).emit('updateGame', {
+        snakes: room.snakes,
+        food: room.food,
+    });
 }
 
 io.on('connection', (socket) => {
@@ -110,6 +103,7 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomCode) => {
         socket.join(roomCode);
+        console.log(`Joueur rejoint la room : ${roomCode}`);
 
         if (!rooms[roomCode]) {
             rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null };
@@ -150,23 +144,22 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-    console.log('Déconnexion');
-    for (const roomCode in rooms) {
-        const room = rooms[roomCode];
-        room.players = room.players.filter(id => id !== socket.id);
+        console.log('Déconnexion');
+        for (const roomCode in rooms) {
+            const room = rooms[roomCode];
+            room.players = room.players.filter(id => id !== socket.id);
 
-        // Nettoyer l'intervalle dès qu'un joueur se déconnecte
-        if (room.interval) {
-            clearInterval(room.interval);
-            room.interval = null;  // Empêcher l'accumulation
+            // Nettoyage
+            if (room.interval) {
+                clearInterval(room.interval);
+                room.interval = null;
+            }
+            if (room.players.length === 0) {
+                delete rooms[roomCode];
+            }
         }
-
-        if (room.players.length === 0) {
-            delete rooms[roomCode];
-        }
-    }
+    });
 });
-
 
 function isValidMove(current, next) {
     return !(
