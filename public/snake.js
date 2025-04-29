@@ -1,4 +1,5 @@
-const socket = io();
+const socket = io('http://di-docker:8023');
+
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
