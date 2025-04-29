@@ -102,25 +102,50 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomCode) => {
         socket.join(roomCode);
+        console.log(`Joueur connecté à la room ${roomCode}`);
 
         if (!rooms[roomCode]) {
-            rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null };
+            rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null, readyCount: 0 };
         }
 
         rooms[roomCode].players.push(socket.id);
 
+        if (rooms[roomCode].players.length === 1) {
+            socket.emit('waiting');
+        }
+
         if (rooms[roomCode].players.length === 2) {
             rooms[roomCode].snakes = createInitialSnakes();
-            io.to(roomCode).emit('startGame', {
-                initialFood: rooms[roomCode].food,
-                initialSnakes: rooms[roomCode].snakes
-            });
+            io.to(roomCode).emit('startCountdown');
+        }
+    });
 
-            rooms[roomCode].interval = setInterval(() => {
-                updateRoom(roomCode);
-            }, 150);
-        } else {
-            socket.emit('waiting');
+    socket.on('startGame', ({ roomCode }) => {
+        const room = rooms[roomCode];
+        if (!room) return;
+
+        room.food = createFood();
+        room.interval = setInterval(() => {
+            updateRoom(roomCode);
+        }, 150);
+
+        io.to(roomCode).emit('startPlaying', {
+            initialFood: room.food,
+            initialSnakes: room.snakes
+        });
+    });
+
+    socket.on('replay', (roomCode) => {
+        const room = rooms[roomCode];
+        if (!room) return;
+
+        room.readyCount++;
+        if (room.readyCount === 2) {
+            clearInterval(room.interval);
+            room.snakes = createInitialSnakes();
+            room.food = createFood();
+            room.readyCount = 0;
+            io.to(roomCode).emit('startCountdown');
         }
     });
 
@@ -142,13 +167,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        console.log('Déconnexion');
         for (const roomCode in rooms) {
             const room = rooms[roomCode];
             room.players = room.players.filter(id => id !== socket.id);
-            if (room.players.length === 0) {
-                clearInterval(room.interval);
-                delete rooms[roomCode];
-            }
+            clearInterval(room.interval);
+            delete rooms[roomCode];
         }
     });
 });
