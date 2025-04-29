@@ -1,16 +1,3 @@
-countdownTimer = setInterval(() => {
-    if (!countdownActive) { // Ajout pour éviter un compte à rebours actif après la fin
-        clearInterval(countdownTimer);
-        return;
-    }
-    countdown--;
-    if (countdown < 0) {
-        clearInterval(countdownTimer);
-        countdownActive = false;
-        playing = true;
-    }
-}, 1000);
-
 const socket    = io();
 const canvas    = document.getElementById('gameCanvas');
 const ctx       = canvas.getContext('2d');
@@ -79,14 +66,6 @@ socket.on('youAre', index => {
 socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
     snakes = newSnakes;
     food = newFood;
-
-    // Vérification : la pomme ne doit pas apparaître sur un serpent
-    const isFoodOnSnake = snakes.some(snake =>
-        snake.body.some(segment => segment.x === food.x && segment.y === food.y)
-    );
-    if (isFoodOnSnake) {
-        console.error("Erreur : La pomme est apparue sur un serpent !");
-    }
 });
 
 // Fin de partie
@@ -102,15 +81,6 @@ socket.on('gameOver', (winner) => {
     } else {
         gameOverMessage = "Tu as perdu !";
     }
-});
-
-socket.on('playerDisconnected', () => {
-    playing = false;
-    countdownActive = false;
-    clearInterval(countdownTimer);
-    statusEl.innerText = "L'autre joueur s'est déconnecté. Partie terminée.";
-    menuEl.style.display = 'block';
-    canvas.style.display = 'none';
 });
 
 // Boucle de dessin
@@ -148,24 +118,16 @@ function gameLoop() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(gameOverMessage, canvas.width / 2, canvas.height / 2);
-        return; // Arrêter la boucle après la fin de partie
     }
 
-    if (playing || countdownActive) {
+    if (playing || countdownActive || gameOverMessage) {
         requestAnimationFrame(gameLoop);
     }
 }
 
-let lastMoveTime = 0; // Ajout pour limiter la fréquence des mouvements
-const moveCooldown = 100; // Temps minimum entre deux mouvements (en ms)
-
+// Touches
 document.addEventListener('keydown', e => {
     if (!playing || playerIndex === null) return;
-
-    const now = Date.now();
-    if (now - lastMoveTime < moveCooldown) return; // Ignorer si trop rapide
-    lastMoveTime = now;
-
     const map = {
         'z':'Up', 's':'Down', 'q':'Left', 'd':'Right',
         'ArrowUp':'Up', 'ArrowDown':'Down', 'ArrowLeft':'Left', 'ArrowRight':'Right'
