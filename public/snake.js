@@ -35,10 +35,10 @@ replayBtn.onclick = () => {
   socket.emit('replay', roomCode);
 };
 
-// En attente du second
-socket.on('waiting', () => {
-  statusEl.innerText = "En attente d'un autre joueur...";
-});
+socket.on('waitingReplay', () => {
+    statusEl.innerText = "En attente du deuxième joueur pour relancer…";
+  });
+  
 
 // Lancement du chrono + init scores
 socket.on('startGame', ({ initialFood, initialSnakes, scores: initialScores }) => {
