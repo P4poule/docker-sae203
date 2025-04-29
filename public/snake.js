@@ -10,7 +10,7 @@ let snakes = [];
 let food = { x: 0, y: 0 };
 let playing = false;
 let roomCode = "";
-let playerIndex = null;
+let playerIndex = null; // 0 = joueur vert, 1 = joueur bleu
 
 document.getElementById('joinBtn').onclick = () => {
     roomCode = document.getElementById('roomCode').value.trim();
@@ -29,8 +29,8 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
     playing = true;
     snakes = initialSnakes;
     food = initialFood;
-    requestAnimationFrame(gameLoop);
     socket.emit('whoAmI', { roomCode });
+    requestAnimationFrame(gameLoop);
 });
 
 socket.on('youAre', (index) => {
@@ -42,20 +42,14 @@ socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
     food = newFood;
 });
 
-socket.on('gameOver', (result) => {
-    playing = false;
-    setTimeout(() => {
-        alert(result === 'draw' ? "Égalité !" : `${result === 'green' ? 'Vert' : 'Bleu'} a gagné !`);
-        location.reload();
-    }, 200);
-});
-
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Dessiner la nourriture
     ctx.fillStyle = 'red';
     ctx.fillRect(food.x * scale, food.y * scale, scale, scale);
 
+    // Dessiner les serpents
     snakes.forEach((snake, idx) => {
         snake.body.forEach((segment, i) => {
             ctx.fillStyle = idx === 0 ? (i === 0 ? 'darkgreen' : 'green') : (i === 0 ? 'darkblue' : 'blue');
@@ -82,7 +76,6 @@ document.addEventListener('keydown', (e) => {
         case 'ArrowLeft': direction = 'Left'; break;
         case 'ArrowRight': direction = 'Right'; break;
     }
-
     if (direction) {
         socket.emit('move', { roomCode, direction, playerIndex });
     }
