@@ -9,10 +9,13 @@ const scale     = 40;
 // État du jeu
 let snakes = [], food = {}, playing = false, roomCode = "", playerIndex = null;
 
-// Pour le compte à rebours
-let countdown        = 3;
-let countdownActive  = false;
-let countdownTimer   = null;
+// Compte à rebours
+let countdown = 3;
+let countdownActive = false;
+let countdownTimer = null;
+
+// Texte de fin de partie
+let gameOverMessage = "";
 
 // Quand on clique sur “Rejoindre la partie”
 startBtn.onclick = () => {
@@ -27,21 +30,19 @@ socket.on('waiting', () => {
     statusEl.innerText = "En attente d'un autre joueur...";
 });
 
-// Dès que les deux joueurs sont là : on lance le décompte
+// Quand deux joueurs sont là : démarrage du compte à rebours
 socket.on('startGame', ({ initialFood, initialSnakes }) => {
-    // Cacher le menu, afficher le canvas
-    menuEl.style.display   = 'none';
-    canvas.style.display   = 'block';
-    statusEl.innerText     = "";
+    menuEl.style.display = 'none';
+    canvas.style.display = 'block';
+    statusEl.innerText = "";
 
-    // Initialisation
-    snakes                = initialSnakes;
-    food                  = initialFood;
-    playing               = false;
-    countdown             = 3;
-    countdownActive       = true;
+    snakes = initialSnakes;
+    food = initialFood;
+    playing = false;
+    gameOverMessage = "";
+    countdown = 3;
+    countdownActive = true;
 
-    // Lancer le timer
     countdownTimer = setInterval(() => {
         countdown--;
         if (countdown < 0) {
@@ -51,84 +52,85 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
         }
     }, 1000);
 
-    // Démarrer la boucle de rendu (draw + overlay)
     requestAnimationFrame(gameLoop);
 
-    // Demander au serveur quel joueur je suis
     socket.emit('whoAmI', { roomCode });
 });
 
-// On reçoit notre index (0 = vert, 1 = bleu)
+// Qui suis-je (0 ou 1)
 socket.on('youAre', index => {
     playerIndex = index;
 });
 
-// Mise à jour du jeu (positions)
+// Mise à jour du jeu (mouvements)
 socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
     snakes = newSnakes;
-    food   = newFood;
+    food = newFood;
 });
 
-// Fin de partie : on affiche le résultat et on réaffiche le menu
-socket.on('gameOver', winner => {
+// Fin de partie
+socket.on('gameOver', (winner) => {
     playing = false;
     clearInterval(countdownTimer);
 
     if (winner === 'draw') {
-        statusEl.innerText = "Match nul !";
+        gameOverMessage = "Match nul !";
     } else if ((winner === 'green' && playerIndex === 0) ||
                (winner === 'blue'  && playerIndex === 1)) {
-        statusEl.innerText = "Tu as perdu.";
+        gameOverMessage = "Tu as perdu.";
     } else {
-        statusEl.innerText = "Tu as gagné !";
+        gameOverMessage = "Tu as gagné !";
     }
-
-    // Revenir au menu
-    canvas.style.display = 'none';
-    menuEl.style.display = 'block';
 });
 
 // Boucle de dessin
 function gameLoop() {
-    // Nettoyage
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Dessiner la pomme
+    // Pomme
     ctx.fillStyle = 'red';
     ctx.fillRect(food.x * scale, food.y * scale, scale, scale);
 
-    // Dessiner les serpents
+    // Serpents
     snakes.forEach((snake, idx) => {
         snake.body.forEach((seg, i) => {
             ctx.fillStyle = idx === 0
                 ? (i === 0 ? 'darkgreen' : 'green')
-                : (i === 0 ? 'darkblue'  : 'blue');
+                : (i === 0 ? 'darkblue' : 'blue');
             ctx.fillRect(seg.x * scale, seg.y * scale, scale, scale);
         });
     });
 
-    // Overlay du compte à rebours
+    // Compte à rebours
     if (countdownActive) {
-        ctx.fillStyle   = 'black';
-        ctx.font        = '80px Arial';
-        ctx.textAlign   = 'center';
-        ctx.textBaseline= 'middle';
-        const text      = countdown > 0 ? countdown.toString() : 'GO';
+        ctx.fillStyle = 'black';
+        ctx.font = '80px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const text = countdown > 0 ? countdown.toString() : 'GO';
         ctx.fillText(text, canvas.width / 2, canvas.height / 2);
     }
 
-    // Continuer la boucle si le jeu est lancé
-    if (playing || countdownActive) {
+    // Fin de partie
+    if (!playing && gameOverMessage) {
+        ctx.fillStyle = 'black';
+        ctx.font = '60px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(gameOverMessage, canvas.width / 2, canvas.height / 2);
+    }
+
+    if (playing || countdownActive || gameOverMessage) {
         requestAnimationFrame(gameLoop);
     }
 }
 
-// Gestion des touches (bloqué pendant countdown)
+// Touches
 document.addEventListener('keydown', e => {
     if (!playing || playerIndex === null) return;
     const map = {
-        'z':'Up','s':'Down','q':'Left','d':'Right',
-        'ArrowUp':'Up','ArrowDown':'Down','ArrowLeft':'Left','ArrowRight':'Right'
+        'z':'Up', 's':'Down', 'q':'Left', 'd':'Right',
+        'ArrowUp':'Up', 'ArrowDown':'Down', 'ArrowLeft':'Left', 'ArrowRight':'Right'
     };
     const direction = map[e.key];
     if (direction) {

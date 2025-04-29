@@ -4,7 +4,6 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 const PORT = 8023;
-
 app.use(express.static('public'));
 
 let rooms = {};
@@ -38,12 +37,53 @@ function moveSnake(snake) {
     snake.body.pop();
 }
 
+function checkCollision(snakes) {
+    const head0 = snakes[0].body[0];
+    const head1 = snakes[1].body[0];
+
+    // Tête contre tête
+    if (head0.x === head1.x && head0.y === head1.y) {
+        return 'draw';
+    }
+
+    // Tête contre son propre corps
+    for (let i = 1; i < snakes[0].body.length; i++) {
+        if (head0.x === snakes[0].body[i].x && head0.y === snakes[0].body[i].y) return 'blue';
+    }
+    for (let i = 1; i < snakes[1].body.length; i++) {
+        if (head1.x === snakes[1].body[i].x && head1.y === snakes[1].body[i].y) return 'green';
+    }
+
+    // Tête contre l'autre serpent
+    for (let part of snakes[1].body) {
+        if (head0.x === part.x && head0.y === part.y) return 'blue';
+    }
+    for (let part of snakes[0].body) {
+        if (head1.x === part.x && head1.y === part.y) return 'green';
+    }
+
+    // Collision avec murs
+    if (head0.x < 0 || head0.x >= 20 || head0.y < 0 || head0.y >= 20) return 'blue';
+    if (head1.x < 0 || head1.x >= 20 || head1.y < 0 || head1.y >= 20) return 'green';
+
+    return null;
+}
+
 function updateRoom(roomCode) {
     const room = rooms[roomCode];
     if (!room) return;
 
     room.snakes.forEach(moveSnake);
 
+    // Gérer les collisions
+    const result = checkCollision(room.snakes);
+    if (result) {
+        clearInterval(room.interval);
+        io.to(roomCode).emit('gameOver', result);
+        return;
+    }
+
+    // Manger la pomme
     room.snakes.forEach(snake => {
         const head = snake.body[0];
         if (head.x === room.food.x && head.y === room.food.y) {
@@ -103,13 +143,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        console.log('Déconnexion');
         for (const roomCode in rooms) {
             const room = rooms[roomCode];
             room.players = room.players.filter(id => id !== socket.id);
-            if (room.players.length === 0) {
-                clearInterval(room.interval);
-                delete rooms[roomCode];
-            }
+            clearInterval(room.interval);
+            delete rooms[roomCode];
         }
     });
 });
