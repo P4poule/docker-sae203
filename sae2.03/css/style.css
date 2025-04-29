@@ -12,8 +12,8 @@
 	cursor: none !important;;
 }
 
-html {
-	height: 100%;
+html, body {
+  height: 100%;
 }
 
 body {
@@ -32,9 +32,16 @@ main {
 }
 
 footer {
-	flex-shrink: 0;
+	margin-top: auto;
+	width: 100%;
+	padding: 1rem;
+	text-align: center;
+	background: rgba(10, 25, 47, 0.9);
 }
 
+/* ============================= */
+/*             Curseur           */
+/* ============================= */
 /* Curseur personnalisé */
 .cursor {
 	position: fixed;
@@ -74,7 +81,32 @@ footer {
 	}
 }
 
-/* Header et navigation */
+/* Traînées derrière le curseur   */
+.cursor-trail {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 8px;
+	height: 8px;
+	background: var(--primary-color);
+	border-radius: 50%;
+	pointer-events: none;
+	transform: translate(-50%, -50%) scale(1);
+	opacity: 1;
+	animation: trailFade 0.6s ease-out forwards;
+	z-index: 500;
+}
+
+@keyframes trailFade {
+	to {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(3);
+	}
+}
+
+/* ============================= */
+/*         Header et navigation  */
+/* ============================= */
 header {
 	position: fixed;
 	top: 0;
@@ -130,7 +162,9 @@ header {
 	/* ajustez à la hauteur réelle + padding du header */
 }
 
-/* Sections communes */
+/* ========================== */
+/*       Sections communes    */
+/* ========================== */
 .hero {
 	height: 100vh;
 	display: flex;
@@ -172,7 +206,9 @@ header {
 	flex-direction: column;
 }
 
-/* Tech-card animations */
+/* =========================== */
+/*    Tech-card animations     */
+/* =========================== */
 .tech-card {
 	opacity: 0;
 	transform: translateY(20px);
