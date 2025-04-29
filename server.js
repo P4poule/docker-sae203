@@ -38,55 +38,15 @@ function moveSnake(snake) {
     snake.body.pop();
 }
 
-function checkCollision(snakes) {
-    const head0 = snakes[0].body[0];
-    const head1 = snakes[1].body[0];
-
-    // Tête contre tête
-    if (head0.x === head1.x && head0.y === head1.y) {
-        return 'draw';
-    }
-
-    // Collision avec soi-même
-    for (let i = 1; i < snakes[0].body.length; i++) {
-        if (head0.x === snakes[0].body[i].x && head0.y === snakes[0].body[i].y) return 'blue';
-    }
-    for (let i = 1; i < snakes[1].body.length; i++) {
-        if (head1.x === snakes[1].body[i].x && head1.y === snakes[1].body[i].y) return 'green';
-    }
-
-    // Collision avec l'autre serpent
-    for (let part of snakes[1].body) {
-        if (head0.x === part.x && head0.y === part.y) return 'blue';
-    }
-    for (let part of snakes[0].body) {
-        if (head1.x === part.x && head1.y === part.y) return 'green';
-    }
-
-    // Collision avec mur
-    if (head0.x < 0 || head0.x >= 20 || head0.y < 0 || head0.y >= 20) return 'blue';
-    if (head1.x < 0 || head1.x >= 20 || head1.y < 0 || head1.y >= 20) return 'green';
-
-    return null;
-}
-
 function updateRoom(roomCode) {
     const room = rooms[roomCode];
     if (!room) return;
 
     room.snakes.forEach(moveSnake);
 
-    // Vérification collision
-    const result = checkCollision(room.snakes);
-    if (result) {
-        clearInterval(room.interval);
-        io.to(roomCode).emit('gameOver', result);
-        return;
-    }
-
-    // Gestion de la nourriture
     room.snakes.forEach(snake => {
-        if (snake.body[0].x === room.food.x && snake.body[0].y === room.food.y) {
+        const head = snake.body[0];
+        if (head.x === room.food.x && head.y === room.food.y) {
             snake.body.push({ ...snake.body[snake.body.length - 1] });
             room.food = createFood();
         }
@@ -103,30 +63,25 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomCode) => {
         socket.join(roomCode);
-        console.log(`Joueur connecté à la room ${roomCode}`);
-    
+
         if (!rooms[roomCode]) {
             rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null };
         }
-    
+
         rooms[roomCode].players.push(socket.id);
-    
-        if (rooms[roomCode].players.length === 1) {
-            // Premier joueur -> envoyer attente
-            socket.emit('waiting');
-        }
-    
+
         if (rooms[roomCode].players.length === 2) {
-            // Deuxième joueur -> démarrer le jeu
             rooms[roomCode].snakes = createInitialSnakes();
             io.to(roomCode).emit('startGame', {
                 initialFood: rooms[roomCode].food,
                 initialSnakes: rooms[roomCode].snakes
             });
-    
+
             rooms[roomCode].interval = setInterval(() => {
                 updateRoom(roomCode);
             }, 150);
+        } else {
+            socket.emit('waiting');
         }
     });
 
@@ -139,7 +94,7 @@ io.on('connection', (socket) => {
 
     socket.on('move', ({ roomCode, direction, playerIndex }) => {
         const room = rooms[roomCode];
-        if (!room || !room.snakes[playerIndex]) return;
+        if (!room) return;
 
         const currentDirection = room.snakes[playerIndex].direction;
         if (isValidMove(currentDirection, direction)) {
@@ -148,14 +103,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('Déconnexion');
         for (const roomCode in rooms) {
             const room = rooms[roomCode];
-            if (!room) continue;
-
             room.players = room.players.filter(id => id !== socket.id);
             if (room.players.length === 0) {
-                if (room.interval) clearInterval(room.interval);
+                clearInterval(room.interval);
                 delete rooms[roomCode];
             }
         }
@@ -172,5 +124,5 @@ function isValidMove(current, next) {
 }
 
 http.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Serveur lancé sur http://0.0.0.0:${PORT}`);
+    console.log(`Serveur lancé sur http://0.0.0.0:${PORT}`);
 });
