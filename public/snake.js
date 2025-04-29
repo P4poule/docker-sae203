@@ -9,16 +9,18 @@ const scale     = 40;
 
 // État du jeu
 let snakes = [], food = {}, playing = false, roomCode = "", playerIndex = null;
+// Scores
+let scores = { green: 0, blue: 0 };
 
 // Compte à rebours
 let countdown = 3;
 let countdownActive = false;
 let countdownTimer = null;
 
-// Texte de fin de partie
+// Message de fin
 let gameOverMessage = "";
 
-// “Rejoindre la partie”
+// “Rejoindre”
 startBtn.onclick = () => {
   const code = document.getElementById('roomCode').value.trim();
   if (!code) return;
@@ -29,26 +31,27 @@ startBtn.onclick = () => {
 // “Recommencer”
 replayBtn.onclick = () => {
   replayBtn.style.display = 'none';
+  statusEl.innerText = "En attente du deuxième joueur...";
   socket.emit('replay', roomCode);
 };
 
-// En attente
+// En attente du second
 socket.on('waiting', () => {
   statusEl.innerText = "En attente d'un autre joueur...";
 });
 
-// Démarrage du chrono
-socket.on('startGame', ({ initialFood, initialSnakes }) => {
-  menuEl.style.display = 'none';
-  canvas.style.display = 'block';
-  replayBtn.style.display = 'none';
-  statusEl.innerText = "";
-
-  snakes = initialSnakes;
-  food   = initialFood;
-  playing = false;
+// Lancement du chrono + init scores
+socket.on('startGame', ({ initialFood, initialSnakes, scores: initialScores }) => {
+  menuEl.style.display      = 'none';
+  canvas.style.display      = 'block';
+  replayBtn.style.display   = 'none';
+  statusEl.innerText        = "";
+  snakes      = initialSnakes;
+  food        = initialFood;
+  scores      = initialScores;        // récupérer les scores
+  playing     = false;
   gameOverMessage = "";
-  countdown = 3;
+  countdown   = 3;
   countdownActive = true;
 
   clearInterval(countdownTimer);
@@ -65,18 +68,23 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
   socket.emit('whoAmI', { roomCode });
 });
 
-// Qui suis-je
+// Mon index (0 ou 1)
 socket.on('youAre', index => {
   playerIndex = index;
 });
 
-// Mise à jour
+// Mise à jour positions
 socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
   snakes = newSnakes;
   food   = newFood;
 });
 
-// Game Over
+// Mise à jour des scores
+socket.on('scoreUpdate', newScores => {
+  scores = newScores;
+});
+
+// Fin de partie
 socket.on('gameOver', (winner) => {
   playing = false;
   clearInterval(countdownTimer);
@@ -97,11 +105,18 @@ socket.on('gameOver', (winner) => {
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Pomme
+  // --- Scoreboard à droite ---
+  ctx.fillStyle = 'black';
+  ctx.font = '20px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText(`Vert: ${scores.green}`, canvas.width - 10, 25);
+  ctx.fillText(`Bleu: ${scores.blue}`, canvas.width - 10, 50);
+
+  // --- Pomme ---
   ctx.fillStyle = 'red';
   ctx.fillRect(food.x * scale, food.y * scale, scale, scale);
 
-  // Serpents
+  // --- Serpents ---
   snakes.forEach((snake, idx) => {
     snake.body.forEach((seg, i) => {
       ctx.fillStyle = idx === 0
@@ -111,7 +126,7 @@ function gameLoop() {
     });
   });
 
-  // Compte à rebours et indication de couleur
+  // --- Compte à rebours + couleur joueur ---
   if (countdownActive) {
     ctx.fillStyle = playerIndex === 0 ? 'green' : 'blue';
     ctx.font = '40px Arial';
@@ -119,25 +134,25 @@ function gameLoop() {
     ctx.textBaseline = 'middle';
     ctx.fillText(
       playerIndex === 0 ? 'Tu es VERT' : 'Tu es BLEU',
-      canvas.width/2,
-      canvas.height/2 - 100
+      canvas.width / 2,
+      canvas.height / 2 - 100
     );
     ctx.fillStyle = 'black';
     ctx.font = '80px Arial';
     ctx.fillText(
       countdown > 0 ? countdown.toString() : 'GO',
-      canvas.width/2,
-      canvas.height/2
+      canvas.width / 2,
+      canvas.height / 2
     );
   }
 
-  // Message de fin
+  // --- Message fin de partie ---
   if (!playing && gameOverMessage) {
     ctx.fillStyle = 'black';
     ctx.font = '60px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(gameOverMessage, canvas.width/2, canvas.height/2);
+    ctx.fillText(gameOverMessage, canvas.width / 2, canvas.height / 2);
   }
 
   if (playing || countdownActive || gameOverMessage) {
@@ -145,7 +160,7 @@ function gameLoop() {
   }
 }
 
-// Contrôles
+// Clavier
 document.addEventListener('keydown', e => {
   if (!playing || playerIndex === null) return;
   const map = {
@@ -153,5 +168,7 @@ document.addEventListener('keydown', e => {
     'ArrowUp':'Up','ArrowDown':'Down','ArrowLeft':'Left','ArrowRight':'Right'
   };
   const dir = map[e.key];
-  if (dir) socket.emit('move', { roomCode, direction: dir, playerIndex });
+  if (dir) {
+    socket.emit('move', { roomCode, direction: dir, playerIndex });
+  }
 });
