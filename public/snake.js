@@ -36,8 +36,14 @@ socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
     food = newFood;
 });
 
+socket.on('gameOver', (winner) => {
+    playing = false;
+    document.getElementById('status').innerText = winner === 'draw' ? 'Match Nul !' : `Victoire de ${winner === 'green' ? 'Vert' : 'Bleu'} !`;
+});
+
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.fillStyle = 'red';
     ctx.fillRect(food.x * scale, food.y * scale, scale, scale);
 
