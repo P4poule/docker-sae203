@@ -1,5 +1,8 @@
 # 🐍 Lancer Notre Jeu Snake Multijoueur avec Docker – Guide Simple
 
+##Notre site de présentation du projet :
+[p4poule.github.io/docker-sae203/sae2.03]
+
 ## 🛠️ Étape 1 : Construction de l'image Docker
 
 Pour commencer, nous devons créer une image Docker de notre jeu. Cette image contiendra tout le nécessaire pour faire fonctionner l'application.
@@ -66,10 +69,3 @@ Pour lister les conteneurs en cours d'exécution :
   ```bash docker ps ```
 
 ## Amusez-vous bien avec notre Snake multijoueur ! �🐍
-
-#Notre site de présentation du projet :
-p4poule.github.io/docker-sae203/sae2.03
-  
-  
-    
-    
