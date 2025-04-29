@@ -37,16 +37,3 @@ Si jamais il y a un souci
     Le port 8023 est déjà pris ?
     On peut simplement en choisir un autre :
 
-
-
-
-
-
-
-
-
-
-
-
-docker build -t snake-multi .
-docker run -d -p 8023:8023 snake-multi
