@@ -6,37 +6,98 @@
 	<meta name="viewport" content="width=device‑width,initial‑scale=1.0">
 	<title>Fonctionnement côté Serveur (server.js)</title>
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
-	<!-- 1) On place le DIV du curseur immuablement -->
 	<div class="cursor"></div>
 
-	<!-- 2) Nav identique partout -->
 	<nav class="glass-nav">
-		<ul>
-			<li><a href="index.html">Présentation générale</a></li>
-			<li><a href="serveur.html">Fonctionnement côté Serveur (server.js)</a></li>
-			<li><a href="client.html">Fonctionnement côté Client (snake.js + index.html)</a></li>
-			<li><a href="deploiement.html">Déploiement et Fonctionnement Docker</a></li>
-			<li><a href="equipe.html">Notre équipe</a></li>
-		</ul>
-	</nav>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Présentation générale</a></li>
+            <li><a href="serveur.html"><i class="fas fa-server"></i> Fonctionnement côté Serveur</a></li>
+            <li><a href="client.html"><i class="fas fa-code"></i> Fonctionnement côté Client</a></li>
+            <li><a href="deploiement.html"><i class="fas fa-docker"></i> Déploiement Docker</a></li>
+            <li><a href="equipe.html"><i class="fas fa-users"></i> Notre équipe</a></li>
+        </ul>
+    </nav>
 
-	<!-- 3) Contenu spécifique -->
 	<main>
 		<section class="content-section">
-			<!-- … */}
-    </section>
-  </main>
+			<!-- Carte Fonctionnement côté Serveur -->
+			<div class="card">
+				<h2>Fonctionnement côté Serveur (server.js)</h2>
 
-  <!-- 4) Footer identique -->
-			<footer>
-				<p>&copy; 2025 Projet SAE 2.03 – Tous droits réservés</p>
-			</footer>
+				<div class="context-section">
+					<h3>Rôle du serveur :</h3>
+					<p>Le serveur agit comme <strong>arbitre</strong> de la partie. Il décide :</p>
+					<ul>
+						<li>De la position des serpents.</li>
+						<li>De la position de la nourriture.</li>
+						<li>De l'issue du match (gagnant, perdant, match nul).</li>
+					</ul>
+				</div>
 
-			<!-- 5) Toujours en dernier -->
-			<script src="js/script.js"></script>
+				<div class="functioning-section">
+					<h3>Organisation du serveur :</h3>
+
+					<h4>Gestion des rooms :</h4>
+					<p>Chaque partie est isolée dans une "room" créée automatiquement lorsque deux joueurs utilisent le
+						même code.</p>
+
+					<h4>Initialisation du jeu :</h4>
+					<ul>
+						<li>Deux serpents sont créés avec une position et une direction initiale.</li>
+						<li>Une nourriture est placée aléatoirement sur le plateau.</li>
+					</ul>
+
+					<h4>Boucle de jeu serveur :</h4>
+					<ul>
+						<li>Toutes les 150 ms :
+							<ul>
+								<li>Les serpents sont déplacés.</li>
+								<li>Les collisions sont vérifiées :
+									<ul>
+										<li>Collision contre un mur</li>
+										<li>Collision contre son propre corps</li>
+										<li>Collision contre l'autre joueur</li>
+										<li>Tête contre tête → Match nul</li>
+									</ul>
+								</li>
+								<li>La nourriture est gérée (manger → grossir → nouvelle nourriture).</li>
+								<li>L'état du jeu est envoyé à tous les clients.</li>
+							</ul>
+						</li>
+					</ul>
+
+					<h4>Gestion de la déconnexion :</h4>
+					<ul>
+						<li>Si un joueur quitte la partie, la room est automatiquement supprimée.</li>
+						<li>Le jeu est arrêté proprement.</li>
+					</ul>
+				</div>
+
+				<div class="technologies-section">
+					<h3>Code simplifié :</h3>
+					<div class="code-container">
+						<button class="copy-btn" onclick="copyCode(this)">
+							<i class="fas fa-copy"></i> Copier
+						</button>
+						<pre><code>if (collisionDetected) {
+    clearInterval(room.interval);
+    id.to(roomcode).emit("gameover", result);
+}</code></pre>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer>
+		<p><strong>&copy; 2025 Projet SAE 2.03 - Snake Multijoueur</strong> – Tous droits réservés</p>
+	</footer>
+
+	<script src="js/script.js"></script>
 </body>
 
 </html>

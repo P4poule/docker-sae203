@@ -1,34 +1,54 @@
-// Effet curseur
-//Stock la référence du curseur en dehors du gestionnaire d'événements
+/* --------------------------------------------------*/
+/*              Effet curseur                        */
+/* --------------------------------------------------*/
 const cursor = document.querySelector('.cursor');
 let mouseX = 0, mouseY = 0;
 
-// masque le curseur custom quand on quitte la fenêtre
+// Au chargement, récupérer les dernières coordonnées connues
+document.addEventListener('DOMContentLoaded', function() {
+	// Récupérer les coordonnées stockées (ou utiliser le centre si aucune)
+	const savedX = sessionStorage.getItem('mouseX');
+	const savedY = sessionStorage.getItem('mouseY');
+	
+	if (savedX && savedY) {
+		mouseX = parseInt(savedX);
+		mouseY = parseInt(savedY);
+		// Rendre visible et positionner immédiatement
+		cursor.style.opacity = '1';
+		cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+	}
+});
+
+// Stocker position avant navigation
+document.querySelectorAll('a').forEach(link => {
+	link.addEventListener('click', () => {
+		sessionStorage.setItem('mouseX', mouseX);
+		sessionStorage.setItem('mouseY', mouseY);
+	});
+});
+
+// Masque le curseur custom quand on quitte la fenêtre
 document.addEventListener('mouseout', (e) => {
-	// e.relatedTarget est null quand on sort du document
 	if (!e.relatedTarget) {
 		cursor.style.opacity = '0';
 	}
 });
 
-// réaffiche quand on revient dans la fenêtre
+// Réaffiche quand on revient dans la fenêtre
 document.addEventListener('mouseover', (e) => {
 	cursor.style.opacity = '1';
 });
 
-// on se contente de capter la souris en permanence
+// Suivi de la souris et création de trainée
 document.addEventListener('mousemove', e => {
 	mouseX = e.clientX;
 	mouseY = e.clientY;
-});
+	
+	// Sauvegarde des coordonnées pour navigation future
+	sessionStorage.setItem('mouseX', mouseX);
+	sessionStorage.setItem('mouseY', mouseY);
 
-//trainée derrière le curseur
-
-document.addEventListener('mousemove', e => {
-	mouseX = e.clientX;
-	mouseY = e.clientY;
-
-	// particule
+	// Création particule de trainée
 	const dot = document.createElement('div');
 	dot.className = 'cursor-trail';
 	dot.style.left = `${e.clientX}px`;
@@ -45,6 +65,34 @@ function updateCursor() {
 }
 
 requestAnimationFrame(updateCursor);
+
+/* --------------------------------------------------*/
+/*      Code pour les boutons de copie de code       */
+/* --------------------------------------------------*/
+document.addEventListener('DOMContentLoaded', function () {
+	const codeContainers = document.querySelectorAll('.code-container');
+
+	codeContainers.forEach(container => {
+		const codeBlock = container.querySelector('pre');
+		const copyButton = document.createElement('button');
+		copyButton.className = 'copy-btn';
+		copyButton.innerHTML = '<i class="fas fa-copy"></i> Copier';
+		container.appendChild(copyButton);
+
+		copyButton.addEventListener('click', function () {
+			const code = codeBlock.textContent;
+			navigator.clipboard.writeText(code).then(() => {
+				copyButton.classList.add('copy-success');
+				copyButton.innerHTML = '<i class="fas fa-check"></i> Copié!';
+
+				setTimeout(() => {
+					copyButton.classList.remove('copy-success');
+					copyButton.innerHTML = '<i class="fas fa-copy"></i> Copier';
+				}, 2000);
+			});
+		});
+	});
+});
 
 // Chargement dynamique du contenu
 document.addEventListener('DOMContentLoaded', () => {

@@ -125,7 +125,7 @@ footer {
 }
 
 /* ============================= */
-/*         Header et navigation  */
+/*      Header et navigation     */
 /* ============================= */
 header {
 	position: fixed;
@@ -260,7 +260,7 @@ pre code {
 }
 
 /* ===================== */
-/*      Team Styles      */
+/*      Team Style       */
 /* ===================== */
 .team-list {
     display: flex;
@@ -309,4 +309,177 @@ a {
 
 a:hover {
     color: var(--primary-color);
+}
+
+/* Indentation des listes */
+ul, ol {
+    padding-left: 2rem;  /* Décalage de 2rem vers la droite */
+    margin: 1rem 0;      /* Espacement vertical */
+}
+
+/* Style spécifique pour les listes dans les feature-cards */
+.feature-card ul {
+    list-style-position: inside;  /* Garde les puces alignées avec le texte */
+    padding-left: 1rem;          /* Légère indentation */
+}
+
+/* Style pour les listes numérotées */
+ol {
+    counter-reset: item;         /* Reset le compteur pour les listes ordonnées */
+    list-style-position: inside; /* Garde les numéros alignés avec le texte */
+}
+
+/*====================== */
+/*     Zone de code      */
+/*====================== */
+
+/* Zone de code copiable */
+.code-container {
+	position: relative;
+	margin: 1.5rem 0;
+	background: rgba(0, 0, 0, 0.3);
+	border-radius: 8px;
+	border-left: 4px solid var(--primary-color);
+	overflow: hidden;
+}
+
+.code-container .copy-btn {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background: rgba(0, 0, 0, 0.4);
+	color: var(--text-color);
+	border: none;
+	border-radius: 4px;
+	padding: 3px 8px;
+	font-size: 0.8em;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	opacity: 0.6;
+	transition: opacity 0.2s, background 0.2s;
+}
+
+.code-container .copy-btn:hover {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.code-container pre {
+	margin: 0;
+	padding: 1rem 1.5rem;
+	overflow-x: auto;
+	font-family: 'Courier New', monospace;
+	white-space: pre;
+	line-height: 1.5;
+	max-height: 400px;
+}
+
+.code-container .copy-success {
+	background: rgba(0, 255, 157, 0.3) !important;
+}
+
+/* ========================== */
+/*  Styles spécifiques pour   */
+/*     la présentation        */
+/* ========================== */
+.context-section h3,
+.functioning-section h3,
+.technologies-section h3 {
+    color: var(--primary-color);
+    margin: 1.5rem 0 1rem;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+}
+
+.technologies-section dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 1rem 2rem;
+    margin: 1rem 0;
+}
+
+.technologies-section dt {
+    font-weight: 700;
+    color: var(--secondary-color);
+    min-width: 150px;
+}
+
+.technologies-section dd {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--primary-color);
+}
+
+.play-steps {
+    padding-left: 2rem;
+}
+
+.play-steps li {
+    margin: 1rem 0;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.play-steps li::before {
+    content: "➤";
+    color: var(--primary-color);
+    position: absolute;
+    left: -1.5rem;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: var(--bg-color);
+    border-radius: 5px;
+    font-weight: bold;
+    transition: transform 0.3s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 157, 0.4);
+}
+
+/* Styles spécifiques pour la page serveur */
+.code-block {
+    background-color: var(--bg-color-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+.code-block table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.code-block td {
+    padding: 0.5rem;
+    border: 1px solid var(--primary-color);
+}
+
+.code-block pre {
+    margin: 0;
+    color: var(--secondary-color);
+    font-family: 'Courier New', monospace;
+}
+
+.functioning-section h4 {
+    color: var(--secondary-color);
+    margin: 1rem 0 0.5rem;
+    font-size: 1.2rem;
+}
+
+.functioning-section ul ul {
+    margin-left: 2rem;
+    list-style-type: circle;
+}
+
+.functioning-section ul ul ul {
+    list-style-type: square;
 }

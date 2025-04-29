@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device‑width,initial‑scale=1.0">
 	<title>Déploiement et Fonctionnement Docker</title>
 	<link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
@@ -13,30 +14,101 @@
 	<div class="cursor"></div>
 
 	<!-- 2) Nav identique partout -->
-	<nav class="glass-nav">
-		<ul>
-			<li><a href="index.html">Présentation générale</a></li>
-			<li><a href="serveur.html">Fonctionnement côté Serveur (server.js)</a></li>
-			<li><a href="client.html">Fonctionnement côté Client (snake.js + index.html)</a></li>
-			<li><a href="deploiement.html">Déploiement et Fonctionnement Docker</a></li>
-			<li><a href="equipe.html">Notre équipe</a></li>
-		</ul>
-	</nav>
+    <nav class="glass-nav">
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i> Présentation générale</a></li>
+            <li><a href="serveur.html"><i class="fas fa-server"></i> Fonctionnement côté Serveur</a></li>
+            <li><a href="client.html"><i class="fas fa-code"></i> Fonctionnement côté Client</a></li>
+            <li><a href="deploiement.html"><i class="fas fa-docker"></i> Déploiement Docker</a></li>
+            <li><a href="equipe.html"><i class="fas fa-users"></i> Notre équipe</a></li>
+        </ul>
+    </nav>
 
 	<!-- 3) Contenu spécifique -->
 	<main>
 		<section class="content-section">
-			<!-- … */} -->
+			<div class="card">
+				<h2><i class="fab fa-docker"></i> Déploiement et Fonctionnement Docker</h2>
+				
+				<div class="feature-card">
+					<i class="fas fa-question-circle"></i>
+					<h3>Pourquoi Docker ?</h3>
+					<p>Docker permet de créer une image portable du serveur. Cela signifie que notre serveur peut être lancé :</p>
+					<ul>
+						<li>Sur une machine personnelle.</li>
+						<li>Sur un serveur distant.</li>
+						<li>Sur n'importe quelle plateforme supportant Docker.</li>
+					</ul>
+				</div>
+				
+				<div class="feature-card">
+					<i class="fas fa-folder-open"></i>
+					<h3>Structure du projet</h3>
+					<pre class="code-block">
+/public
+    ├── index.html
+    ├── snake.js
+    ├── style.css
+    ├── server.js
+    ├── Dockerfile
+    ├── package.json</pre>
+				</div>
+				
+				<div class="feature-card">
+					<i class="fas fa-file-code"></i>
+					<h3>Contenu du Dockerfile</h3>
+					<ul>
+						<li>Prend une image Debian officielle.</li>
+						<li>Installe Node.js et npm.</li>
+						<li>Copie les fichiers du projet.</li>
+						<li>Installe les dépendances express et socket.io.</li>
+						<li>Lance automatiquement server.js au démarrage.</li>
+					</ul>
+				</div>
+
+                <div class="technologies-section">
+					<h3>Code simplifié :</h3>
+					<div class="code-container">
+						<button class="copy-btn" onclick="copyCode(this)">
+							<i class="fas fa-copy"></i> Copier
+						</button>
+						<pre><code>if (collisionDetected) {
+    clearInterval(room.interval);
+    id.to(roomcode).emit("gameover", result);
+}</code></pre>
+					</div>
+				</div>
+				
+				<div class="technologies-section">
+					<i class="fas fa-terminal"></i>
+					<h3>Commandes pour déployer</h3>
+                    <p>Construire l'image Docker</p>
+					<code> <pre class="code-block">
+docker build -t snake-multi .
+
+# Lancer le serveur sur le port 8023
+docker run -d -p 8023:8023 snake-multi</pre></code>
+				</div>
+				
+				<div class="technologies-section">
+					<h2>Code pour accéder au jeu :</h2>
+					<div class="code-container">
+						<button class="copy-btn" onclick="copyCode(this)">
+							<i class="fas fa-copy"></i> Copier
+						</button>
+						<pre><code>http://di-docker:8023</code></pre>
+					</div>
+				</div>
+			</div>
 		</section>
 	</main>
 
 	<!-- 4) Footer identique -->
 	<footer>
-		<p>&copy; 2025 Projet SAE 2.03 – Tous droits réservés</p>
+		<p>&copy; 2025 Projet SAE 2.03 – Tous droits réservés</p>
 	</footer>
 
 	<!-- 5) Toujours en dernier -->
 	<script src="js/script.js"></script>
 </body>
-
 </html>
