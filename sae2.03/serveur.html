@@ -31,7 +31,7 @@
 				<div class="context-section">
 					<h3>Rôle du serveur :</h3>
 					<p>Le serveur agit comme <strong>arbitre</strong> de la partie. Il décide :</p>
-					<ul>
+					<ul class="play-steps">
 						<li>De la position des serpents.</li>
 						<li>De la position de la nourriture.</li>
 						<li>De l'issue du match (gagnant, perdant, match nul).</li>
@@ -46,18 +46,20 @@
 						même code.</p>
 
 					<h4>Initialisation du jeu :</h4>
-					<ul>
+					<ul class="play-steps">
 						<li>Deux serpents sont créés avec une position et une direction initiale.</li>
 						<li>Une nourriture est placée aléatoirement sur le plateau.</li>
 					</ul>
 
-					<h4>Boucle de jeu serveur :</h4>
-					<ul>
-						<li>Toutes les 150 ms :
-							<ul>
+					<h4>Boucle de jeu serveur :</h4>
+					<ul class="play-steps">
+						<li>Toutes les 150 ms :
+							<!-- UL imbriquée -->
+							<ul class="play-steps">
 								<li>Les serpents sont déplacés.</li>
-								<li>Les collisions sont vérifiées :
-									<ul>
+								<li>Les collisions sont vérifiées :
+									<!-- UL à 3ème niveau -->
+									<ul class = "play-steps">
 										<li>Collision contre un mur</li>
 										<li>Collision contre son propre corps</li>
 										<li>Collision contre l'autre joueur</li>
@@ -71,14 +73,14 @@
 					</ul>
 
 					<h4>Gestion de la déconnexion :</h4>
-					<ul>
+					<ul class="play-steps">
 						<li>Si un joueur quitte la partie, la room est automatiquement supprimée.</li>
 						<li>Le jeu est arrêté proprement.</li>
 					</ul>
 				</div>
 
 				<div class="technologies-section">
-					<h3>Code simplifié :</h3>
+					<h3>Code pour gérer les collisions :</h3>
 					<div class="code-container">
 						<button class="copy-btn" onclick="copyCode(this)">
 							<i class="fas fa-copy"></i> Copier

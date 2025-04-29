@@ -10,78 +10,78 @@
 </head>
 
 <body>
-    <div class="cursor"></div>
+	<div class="cursor"></div>
+	
+	<nav class="glass-nav">
+		<ul>
+			<li><a href="index.html"><i class="fas fa-home"></i> Présentation générale</a></li>
+			<li><a href="serveur.html"><i class="fas fa-server"></i> Fonctionnement côté Serveur</a></li>
+			<li><a href="client.html"><i class="fas fa-code"></i> Fonctionnement côté Client</a></li>
+			<li><a href="deploiement.html"><i class="fas fa-docker"></i> Déploiement Docker</a></li>
+			<li><a href="equipe.html"><i class="fas fa-users"></i> Notre équipe</a></li>
+		</ul>
+	</nav>
 
-    <nav class="glass-nav">
-        <ul>
-            <li><a href="index.html"><i class="fas fa-home"></i> Présentation générale</a></li>
-            <li><a href="serveur.html"><i class="fas fa-server"></i> Fonctionnement côté Serveur</a></li>
-            <li><a href="client.html"><i class="fas fa-code"></i> Fonctionnement côté Client</a></li>
-            <li><a href="deploiement.html"><i class="fas fa-docker"></i> Déploiement Docker</a></li>
-            <li><a href="equipe.html"><i class="fas fa-users"></i> Notre équipe</a></li>
-        </ul>
-    </nav>
+	<main>
+		<section class="content-section">
+			<!-- Carte Présentation Générale -->
+			<div class="card">
+				<h2>Présentation Générale</h2>
+				
+				<div class="context-section">
+					<h3>Contexte du projet :</h3>
+					<p>Dans le cadre de la <strong>SAE 2.03</strong>, l'objectif était de développer un service réseau utilisant <strong>Docker</strong> pour faciliter le déploiement d'une application.</p>
+					<p>Notre choix s'est porté sur la création d'un <strong>jeu multijoueur Snake</strong>, simple et rapide d'accès, fonctionnant à travers une architecture <strong>client-serveur</strong> avec <strong>synchronisation en temps réel</strong>.</p>
+				</div>
 
-    <main>
-        <section class="content-section">
-            <!-- Carte Présentation Générale -->
-            <div class="card">
-                <h2>Présentation Générale</h2>
-                
-                <div class="context-section">
-                    <h3>Contexte du projet :</h3>
-                    <p>Dans le cadre de la <strong>SAE 2.03</strong>, l'objectif était de développer un service réseau utilisant <strong>Docker</strong> pour faciliter le déploiement d'une application.</p>
-                    <p>Notre choix s'est porté sur la création d'un <strong>jeu multijoueur Snake</strong>, simple et rapide d'accès, fonctionnant à travers une architecture <strong>client-serveur</strong> avec <strong>synchronisation en temps réel</strong>.</p>
-                </div>
+				<div class="functioning-section">
+					<h3>Résumé du fonctionnement :</h3>
+					<ul class="play-steps">
+						<li>Deux joueurs peuvent se connecter sur un même serveur avec un <strong>code de salle</strong></li>
+						<li>Démarrage automatique de la partie après connexion</li>
+						<li>Contrôle individuel des serpents avec touches dédiées</li>
+						<li>Synchronisation des éléments via <strong>Node.js</strong></li>
+						<li>Déploiement simplifié avec <strong>Docker</strong></li>
+					</ul>
+				</div>
 
-                <div class="functioning-section">
-                    <h3>Résumé du fonctionnement :</h3>
-                    <ul>
-                        <li>Deux joueurs peuvent se connecter sur un même serveur avec un <strong>code de salle</strong></li>
-                        <li>Démarrage automatique de la partie après connexion</li>
-                        <li>Contrôle individuel des serpents avec touches dédiées</li>
-                        <li>Synchronisation des éléments via <strong>Node.js</strong></li>
-                        <li>Déploiement simplifié avec <strong>Docker</strong></li>
-                    </ul>
-                </div>
+				<div class="technologies-section">
+					<h3>Technologies principales :</h3>
+					<dl>
+						<dt>Docker</dt>
+						<dd>Isolation et portabilité du serveur</dd>
+						
+						<dt>Node.js</dt>
+						<dd>Gestion des événements serveur en temps réel</dd>
+						
+						<dt>Express.js</dt>
+						<dd>Serveur HTTP léger pour servir les fichiers</dd>
+						
+						<dt>Socket.io</dt>
+						<dd>Communication temps réel client-serveur</dd>
+						
+						<dt>HTML5/CSS/JavaScript</dt>
+						<dd>Interface de jeu dans le navigateur</dd>
+					</dl>
+				</div>
+			</div>
 
-                <div class="technologies-section">
-                    <h3>Technologies principales :</h3>
-                    <dl>
-                        <dt>Docker</dt>
-                        <dd>Isolation et portabilité du serveur</dd>
-                        
-                        <dt>Node.js</dt>
-                        <dd>Gestion des événements serveur en temps réel</dd>
-                        
-                        <dt>Express.js</dt>
-                        <dd>Serveur HTTP léger pour servir les fichiers</dd>
-                        
-                        <dt>Socket.io</dt>
-                        <dd>Communication temps réel client-serveur</dd>
-                        
-                        <dt>HTML5/CSS/JavaScript</dt>
-                        <dd>Interface de jeu dans le navigateur</dd>
-                    </dl>
-                </div>
-            </div>
-
-            <!-- Carte Comment jouer -->
-            <div class="card">
-                <h2>Comment jouer ?</h2>
-                <ol class="play-steps">
-                    <li>Créez ou rejoignez une partie avec un code</li>
-                    <li>Attendez qu'un adversaire se connecte</li>
-                    <li>Contrôlez votre serpent avec les flèches</li>
-                    <li>
-                        <a href="http://di-docker:8023" class="btn-primary" target="_blank" rel="noopener noreferrer">
-                            Jouer maintenant !
-                        </a>
-                    </li>
-                </ol>
-            </div>
-        </section>
-    </main>
+			<!-- Carte Comment jouer -->
+			<div class="card">
+				<h2>Comment jouer ?</h2>
+				<ol class="play-steps">
+					<li>Créez ou rejoignez une partie avec un code</li>
+					<li>Attendez qu'un adversaire se connecte</li>
+					<li>Contrôlez votre serpent avec les flèches</li>
+					<li>
+						<a href="http://di-docker:8023" class="btn-primary" target="_blank" rel="noopener noreferrer">
+							Jouer maintenant !
+						</a>
+					</li>
+				</ol>
+			</div>
+		</section>
+	</main>
 
 
 	<footer>

@@ -5,7 +5,7 @@
 	<meta charset="UTF‑8">
 	<meta name="viewport" content="width=device‑width,initial‑scale=1.0">
 	<title>Fonctionnement côté Client (snake.js + index.html)</title>
-	<link rel="stylesheet" href="css/style.css">*
+	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
@@ -27,79 +27,75 @@
 	<!-- 3) Contenu spécifique -->
 	<main>
 		<section class="content-section">
-			<body>
-				<h1>Fonctionnement côté Client (snake.js + index.html)</h1>
-			
-				<h2>Rôle du client :</h2>
-				<ul>
-					<li>Afficher l'état du jeu (plateau, serpents, nourriture).</li>
-					<li>Gérer les entrées clavier du joueur.</li>
-					<li>Envoyer les mouvements au serveur en temps réel.</li>
-					<li>Afficher le résultat de la partie (gagné, perdu, égalité).</li>
-				</ul>
-			
+			<div class="card">
+				<h2>Fonctionnement côté Client (snake.js + index.html)</h2>
+		
+				<div class="functioning-section">
+					<h3>Rôle du client :</h3>
+					<ul class="play-steps">
+						<li>Afficher l'état du jeu (plateau, serpents, nourriture)</li>
+						<li>Gérer les entrées clavier du joueur</li>
+						<li>Envoyer les mouvements au serveur en temps réel</li>
+						<li>Afficher le résultat de la partie (gagné, perdu, égalité)</li>
+					</ul>
+				</div>
+		
 				<hr>
-			
-				<h2>Organisation du client :</h2>
-			
-				<h3>Connexion :</h3>
-				<ul>
-					<li>L'utilisateur entre un code de salle et appuie sur "Rejoindre la partie".</li>
-					<li>En attente d'un autre joueur s'il est seul.</li>
-				</ul>
-			
-				<h3>Affichage du jeu :</h3>
-				<ul>
-					<li>Utilisation d'un canvas HTML5 de 800x800 pixels.</li>
-					<li>Chaque case mesure 40x40 pixels.</li>
-					<li>Serpents colorés :
-						<ul>
-							<li>Vert pour Joueur 1, Bleu pour Joueur 2.</li>
-							<li>La tête est plus foncée pour la distinguer.</li>
-						</ul>
-					</li>
-				</ul>
-			
-				<h3>Synchronisation :</h3>
-				<ul>
-					<li>Chaque fois que l'état du jeu est reçu du serveur (updateesame), le canvas est redessiné.</li>
-				</ul>
-			
-				<h3>Fin de partie :</h3>
-				<ul>
-					<li>Si victoire ou défaite : un message s'affiche (Tu as gagné ou Tu as perdu).</li>
-					<li>Si égalité : message (Match nul).</li>
-				</ul>
-			
-				<hr>
-			
-				<h2>Code simplifié :</h2>
-			
-				<table>
-					<tr>
-						<th>javascript</th>
-						<th>✅ Copier</th>
-						<th>✅ Modifier</th>
-					</tr>
-					<tr>
-						<td>
-							<pre><code>socket.on('gameOver', (result) => {
-			    if (result === 'draw') alert('Match nul !');
-			    else if (playerIndex === 0 && result === 'green') alert('Tu as gagné !');
-			    else if (playerIndex === 1 && result === 'blue') alert('Tu as gagné !');
-			    else alert('Tu as perdu !');
-			});</code></pre>
-						</td>
-						<td>✅</td>
-						<td>✅</td>
-					</tr>
-				</table>
+		
+				<div class="functioning-section">
+					<h3>Organisation du client :</h3>
+		
+					<h4>Connexion :</h4>
+					<ul class="play-steps">
+						<li>L'utilisateur entre un code de salle et appuie sur : </li> 
+						<button class="btn-primary">Rejoindre la partie</button>
+						<li>En attente d'un autre joueur s'il est seul</li>
+					</ul>
+		
+					<h4>Affichage du jeu :</h4>
+					<ul class="play-steps">
+						<li>Utilisation d'un canvas HTML5 de 800x800 pixels</li>
+						<li>Chaque case mesure 40x40 pixels</li>
+						<li>Serpents colorés : 
+							<ul>
+								<li>Vert pour Joueur 1, Bleu pour Joueur 2</li>
+								<li>La tête est plus foncée pour la distinguer</li>
+							</ul>
+						</li>
+					</ul>
+		
+					<h4>Synchronisation :</h4>
+					<ul class="play-steps">
+						<li>Chaque fois que l'état du jeu est reçu du serveur (updateesame), le canvas est redessiné</li>
+					</ul>
+		
+					<h4>Fin de partie :</h4>
+					<ul class="play-steps">
+						<li>Si victoire ou défaite : message "Tu as gagné" ou "Tu as perdu"</li>
+						<li>Si égalité : message "Match nul"</li>
+					</ul>
+				</div>
+		
+				<div class="technologies-section">
+					<h2>Code de la condition :</h2>
+					<div class="code-container">
+						<button class="copy-btn" onclick="copyCode(this)">
+							<i class="fas fa-copy"></i> Copier
+						</button>
+					<code> <pre class="code-block">socket.on('gameOver', (result) => {
+if (result === 'draw') alert('Match nul !');
+else if (playerIndex === 0 && result === 'green') alert('Tu as gagné !');
+else if (playerIndex === 1 && result === 'blue') alert('Tu as gagné !');
+else alert('Tu as perdu !');
+	});</pre></code>
+				</div>
+			</div>
 		</section>
 	</main>
 
   <!-- 4) Footer identique -->
 	<footer>
-		<p>&copy; 2025 Projet SAE 2.03 – Tous droits réservés</p>
+		<p><strong>&copy; 2025 Projet SAE 2.03 - Snake Multijoueur</strong> – Tous droits réservés</p>
 	</footer>
 
 	<!-- 5) Toujours en dernier -->

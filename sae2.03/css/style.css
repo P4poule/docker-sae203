@@ -313,7 +313,7 @@ a:hover {
 
 /* Indentation des listes */
 ul, ol {
-    padding-left: 2rem;  /* Décalage de 2rem vers la droite */
+	padding-left: 2rem;  /* Décalage de 2rem vers la droite */
     margin: 1rem 0;      /* Espacement vertical */
 }
 
@@ -412,21 +412,28 @@ ol {
     border-left: 2px solid var(--primary-color);
 }
 
-.play-steps {
-    padding-left: 2rem;
+.play-steps li,
+.play-steps ul {
+	list-style: none;
+	position: relative;
+	margin: 1rem 0;
+	padding-left: 1rem;
 }
 
-.play-steps li {
-    margin: 1rem 0;
-    padding-left: 1rem;
-    position: relative;
+.play-steps>li::before {
+	content: "➤";
+	color: var(--primary-color);
+	position: absolute;
+	left: 0;
 }
 
-.play-steps li::before {
-    content: "➤";
-    color: var(--primary-color);
-    position: absolute;
-    left: -1.5rem;
+
+.functioning-section ul ul {
+	list-style-type: circle;
+}
+
+.functioning-section ul ul ul {
+	list-style-type: square;
 }
 
 .btn-primary {

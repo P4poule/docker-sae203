@@ -30,34 +30,31 @@
 			<div class="card">
 				<h2><i class="fab fa-docker"></i> Déploiement et Fonctionnement Docker</h2>
 				
-				<div class="feature-card">
-					<i class="fas fa-question-circle"></i>
+				<div div class="context-section">
 					<h3>Pourquoi Docker ?</h3>
 					<p>Docker permet de créer une image portable du serveur. Cela signifie que notre serveur peut être lancé :</p>
-					<ul>
+					<ul class="play-steps">
 						<li>Sur une machine personnelle.</li>
 						<li>Sur un serveur distant.</li>
 						<li>Sur n'importe quelle plateforme supportant Docker.</li>
 					</ul>
 				</div>
 				
-				<div class="feature-card">
-					<i class="fas fa-folder-open"></i>
+				<div div class="context-section">
 					<h3>Structure du projet</h3>
-					<pre class="code-block">
+					<code> <pre class="code-block">
 /public
     ├── index.html
     ├── snake.js
     ├── style.css
     ├── server.js
     ├── Dockerfile
-    ├── package.json</pre>
+    ├── package.json</pre></code>
 				</div>
 				
-				<div class="feature-card">
-					<i class="fas fa-file-code"></i>
+				<div div class="context-section">
 					<h3>Contenu du Dockerfile</h3>
-					<ul>
+					<ul class="play-steps">
 						<li>Prend une image Debian officielle.</li>
 						<li>Installe Node.js et npm.</li>
 						<li>Copie les fichiers du projet.</li>
@@ -65,30 +62,34 @@
 						<li>Lance automatiquement server.js au démarrage.</li>
 					</ul>
 				</div>
-
-                <div class="technologies-section">
-					<h3>Code simplifié :</h3>
+				
+				<div class="technologies-section">
+					<h2>Commandes pour déployer</h2>
+					<p>Construire l'image Docker</p>
 					<div class="code-container">
-						<button class="copy-btn" onclick="copyCode(this)">
-							<i class="fas fa-copy"></i> Copier
+						<button class ="copy-btn" onclick="copyCode(this)">
+							<i class ="fas fa-copy"></i> Copier
 						</button>
-						<pre><code>if (collisionDetected) {
-    clearInterval(room.interval);
-    id.to(roomcode).emit("gameover", result);
-}</code></pre>
+					
+                    
+					<code> <pre class="code-block">
+docker build -t snake-multi . </pre></code>
 					</div>
 				</div>
 				
+				
 				<div class="technologies-section">
-					<i class="fas fa-terminal"></i>
-					<h3>Commandes pour déployer</h3>
-                    <p>Construire l'image Docker</p>
-					<code> <pre class="code-block">
-docker build -t snake-multi .
+					<h2>Lancer le serveur sur le port 8023</h2>
+					<div class="code-container">
+						<button class ="copy-btn" onclick="copyCode(this)">
+							<i class ="fas fa-copy"></i> Copier
+						</button>
 
-# Lancer le serveur sur le port 8023
+						<code> <pre class="code-block">
 docker run -d -p 8023:8023 snake-multi</pre></code>
+					</div>
 				</div>
+						
 				
 				<div class="technologies-section">
 					<h2>Code pour accéder au jeu :</h2>
@@ -96,7 +97,7 @@ docker run -d -p 8023:8023 snake-multi</pre></code>
 						<button class="copy-btn" onclick="copyCode(this)">
 							<i class="fas fa-copy"></i> Copier
 						</button>
-						<pre><code>http://di-docker:8023</code></pre>
+						<code> <pre class="code-block"> http://di-docker:8023</pre></code>
 					</div>
 				</div>
 			</div>
@@ -105,7 +106,7 @@ docker run -d -p 8023:8023 snake-multi</pre></code>
 
 	<!-- 4) Footer identique -->
 	<footer>
-		<p>&copy; 2025 Projet SAE 2.03 – Tous droits réservés</p>
+		<p><strong>&copy; 2025 Projet SAE 2.03 - Snake Multijoueur</strong> – Tous droits réservés</p>
 	</footer>
 
 	<!-- 5) Toujours en dernier -->
