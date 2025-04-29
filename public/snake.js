@@ -38,7 +38,14 @@ socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
 
 socket.on('gameOver', (winner) => {
     playing = false;
-    document.getElementById('status').innerText = winner === 'draw' ? 'Match Nul !' : `Victoire de ${winner === 'green' ? 'Vert' : 'Bleu'} !`;
+    
+    if (winner === 'draw') {
+        document.getElementById('status').innerText = "Match nul !";
+    } else if ((winner === 'green' && playerIndex === 0) || (winner === 'blue' && playerIndex === 1)) {
+        document.getElementById('status').innerText = "Tu as perdu.";
+    } else {
+        document.getElementById('status').innerText = "Tu as gagné !";
+    }
 });
 
 function gameLoop() {
