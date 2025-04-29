@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Snake Multijoueur</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Snake Multijoueur</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="menu">
-        <h1>Snake Multijoueur</h1>
-        <input type="text" id="roomCode" placeholder="Code de la partie">
-        <button id="startButton">Rejoindre la partie</button>
-        <p id="status"></p>
-    </div>
+  <div id="menu">
+    <h1>Snake Multijoueur</h1>
+    <input type="text" id="roomCode" placeholder="Code de la partie">
+    <button id="startButton">Rejoindre la partie</button>
+    <p id="status"></p>
+  </div>
 
-    <canvas id="gameCanvas" width="800" height="800" style="display:none;"></canvas>
+  <canvas id="gameCanvas" width="800" height="800" style="display:none"></canvas>
+  <button id="replayButton" style="display:none; position:absolute; top:20px; right:20px;">
+    Recommencer
+  </button>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="snake.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="snake.js"></script>
 </body>
 </html>
