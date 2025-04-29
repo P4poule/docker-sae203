@@ -44,6 +44,10 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
     countdownActive = true;
 
     countdownTimer = setInterval(() => {
+        if (!countdownActive) { // Ajout pour éviter un compte à rebours actif après la fin
+            clearInterval(countdownTimer);
+            return;
+        }
         countdown--;
         if (countdown < 0) {
             clearInterval(countdownTimer);
@@ -66,6 +70,14 @@ socket.on('youAre', index => {
 socket.on('updateGame', ({ snakes: newSnakes, food: newFood }) => {
     snakes = newSnakes;
     food = newFood;
+
+    // Vérification : la pomme ne doit pas apparaître sur un serpent
+    const isFoodOnSnake = snakes.some(snake =>
+        snake.body.some(segment => segment.x === food.x && segment.y === food.y)
+    );
+    if (isFoodOnSnake) {
+        console.error("Erreur : La pomme est apparue sur un serpent !");
+    }
 });
 
 // Fin de partie
@@ -81,6 +93,15 @@ socket.on('gameOver', (winner) => {
     } else {
         gameOverMessage = "Tu as perdu !";
     }
+});
+
+socket.on('playerDisconnected', () => {
+    playing = false;
+    countdownActive = false;
+    clearInterval(countdownTimer);
+    statusEl.innerText = "L'autre joueur s'est déconnecté. Partie terminée.";
+    menuEl.style.display = 'block';
+    canvas.style.display = 'none';
 });
 
 // Boucle de dessin
