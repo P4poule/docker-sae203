@@ -3,7 +3,7 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-const PORT = 3000;
+const PORT = 8023;
 
 app.use(express.static('public'));
 
@@ -11,8 +11,8 @@ let rooms = {};
 
 function createFood() {
     const scale = 40;
-    const rows = 600 / scale;
-    const cols = 600 / scale;
+    const rows = 800 / scale;
+    const cols = 800 / scale;
     return {
         x: Math.floor(Math.random() * cols),
         y: Math.floor(Math.random() * rows),
@@ -22,7 +22,7 @@ function createFood() {
 function createInitialSnakes() {
     return [
         { body: [{ x: 5, y: 5 }], direction: 'Right' },
-        { body: [{ x: 10, y: 10 }], direction: 'Left' }
+        { body: [{ x: 14, y: 14 }], direction: 'Left' }
     ];
 }
 
@@ -44,15 +44,13 @@ function updateRoom(roomCode) {
 
     room.snakes.forEach(moveSnake);
 
-    for (let i = 0; i < room.snakes.length; i++) {
-        const snake = room.snakes[i];
+    room.snakes.forEach(snake => {
         const head = snake.body[0];
-
         if (head.x === room.food.x && head.y === room.food.y) {
             snake.body.push({ ...snake.body[snake.body.length - 1] });
             room.food = createFood();
         }
-    }
+    });
 
     io.to(roomCode).emit('updateGame', {
         snakes: room.snakes,
@@ -65,7 +63,6 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomCode) => {
         socket.join(roomCode);
-        console.log(`Joueur connecté à la room ${roomCode}`);
 
         if (!rooms[roomCode]) {
             rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null };
@@ -106,7 +103,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('Déconnexion');
         for (const roomCode in rooms) {
             const room = rooms[roomCode];
             room.players = room.players.filter(id => id !== socket.id);
@@ -127,7 +123,6 @@ function isValidMove(current, next) {
     );
 }
 
-
 http.listen(PORT, '0.0.0.0', () => {
-    console.log("Serveur lancé sur http://0.0.0.0:${PORT}");
-    });
+    console.log(`Serveur lancé sur http://0.0.0.0:${PORT}`);
+});
