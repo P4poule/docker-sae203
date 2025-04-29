@@ -150,23 +150,23 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log('Déconnexion');
-        for (const roomCode in rooms) {
-            const room = rooms[roomCode];
-            room.players = room.players.filter(id => id !== socket.id);
-    
-            // Nettoyer l'intervalle dès qu'un joueur se déconnecte
-            if (room.interval) {
-                clearInterval(room.interval);
-                room.interval = null;  // Empêcher l'accumulation
-            }
-    
-            if (room.players.length === 0) {
-                delete rooms[roomCode];
-            }
+    console.log('Déconnexion');
+    for (const roomCode in rooms) {
+        const room = rooms[roomCode];
+        room.players = room.players.filter(id => id !== socket.id);
+
+        // Nettoyer l'intervalle dès qu'un joueur se déconnecte
+        if (room.interval) {
+            clearInterval(room.interval);
+            room.interval = null;  // Empêcher l'accumulation
         }
-    });
-    
+
+        if (room.players.length === 0) {
+            delete rooms[roomCode];
+        }
+    }
+});
+
 
 function isValidMove(current, next) {
     return !(
