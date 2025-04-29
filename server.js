@@ -44,18 +44,65 @@ function updateRoom(roomCode) {
 
     room.snakes.forEach(moveSnake);
 
-    room.snakes.forEach(snake => {
-        const head = snake.body[0];
-        if (head.x === room.food.x && head.y === room.food.y) {
-            snake.body.push({ ...snake.body[snake.body.length - 1] });
-            room.food = createFood();
-        }
-    });
+    let gameOver = false;
+    let loserIndex = null;
+    let isDraw = false;
 
-    io.to(roomCode).emit('updateGame', {
-        snakes: room.snakes,
-        food: room.food,
-    });
+    const [snake1, snake2] = room.snakes;
+    const head1 = snake1.body[0];
+    const head2 = snake2.body[0];
+
+    // Vérifie si les têtes se touchent (match nul)
+    if (head1.x === head2.x && head1.y === head2.y) {
+        gameOver = true;
+        isDraw = true;
+    }
+
+    if (!isDraw) {
+        room.snakes.forEach((snake, i) => {
+            const head = snake.body[0];
+
+            // Collision avec murs
+            if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
+                gameOver = true;
+                loserIndex = i;
+            }
+
+            // Collision avec soi-même
+            snake.body.slice(1).forEach(segment => {
+                if (head.x === segment.x && head.y === segment.y) {
+                    gameOver = true;
+                    loserIndex = i;
+                }
+            });
+
+            // Collision avec l'autre serpent
+            const otherSnake = room.snakes[1 - i];
+            otherSnake.body.forEach(segment => {
+                if (head.x === segment.x && head.y === segment.y) {
+                    gameOver = true;
+                    loserIndex = i;
+                }
+            });
+
+            // Manger une pomme
+            if (head.x === room.food.x && head.y === room.food.y) {
+                snake.body.push({ ...snake.body[snake.body.length - 1] });
+                room.food = createFood();
+            }
+        });
+    }
+
+    if (gameOver) {
+        clearInterval(room.interval);
+        io.to(roomCode).emit('gameOver', { loserIndex, isDraw });
+        delete rooms[roomCode];
+    } else {
+        io.to(roomCode).emit('updateGame', {
+            snakes: room.snakes,
+            food: room.food,
+        });
+    }
 }
 
 io.on('connection', (socket) => {
@@ -103,16 +150,23 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        console.log('Déconnexion');
         for (const roomCode in rooms) {
             const room = rooms[roomCode];
             room.players = room.players.filter(id => id !== socket.id);
-            if (room.players.length === 0) {
+    
+            // Nettoyer l'intervalle dès qu'un joueur se déconnecte
+            if (room.interval) {
                 clearInterval(room.interval);
+                room.interval = null;  // Empêcher l'accumulation
+            }
+    
+            if (room.players.length === 0) {
                 delete rooms[roomCode];
             }
         }
     });
-});
+    
 
 function isValidMove(current, next) {
     return !(

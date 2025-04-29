@@ -27,6 +27,20 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
     socket.emit('whoAmI', { roomCode });
 });
 
+socket.on('gameOver', ({ loserIndex, isDraw }) => {
+    playing = false;
+    let resultMessage = "";
+    if (isDraw) {
+        resultMessage = "Match nul !";
+    } else {
+        resultMessage = loserIndex === playerIndex ? "Tu as perdu !" : "Tu as gagné !";
+    }
+    alert(`Partie terminée : ${resultMessage}`);
+    document.getElementById('menu').style.display = 'block';
+    document.getElementById('gameCanvas').style.display = 'none';
+});
+
+
 socket.on('youAre', (index) => {
     playerIndex = index;
 });
