@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake Multijoueur</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="menu">
+        <h1>Snake Multijoueur</h1>
+        <input type="text" id="roomCode" placeholder="Code de la partie">
+        <button id="joinBtn">Rejoindre la partie</button>
+        <p id="waiting"></p>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="800" style="display:none;"></canvas>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="snake.js"></script>
+</body>
+</html>
