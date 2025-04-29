@@ -1,4 +1,4 @@
-Lancer Notre Jeu Snake Multijoueur avec Docker – Guide Simple
+# Lancer Notre Jeu Snake Multijoueur avec Docker – Guide Simple
 Étape 1 : On construit l’image Docker
 
 Pour commencer, on doit créer une image Docker de notre jeu. C’est une version empaquetée avec tout ce qu’il faut.
@@ -35,5 +35,6 @@ http://di-docker:8023
 Si jamais il y a un souci
 
     Le port 8023 est déjà pris ?
-    On peut simplement en choisir un autre 
-
+    On peut simplement en choisir un autre :
+    docker build -t snake-multi .
+    docker run -d -p 8023:8023 snake-multi
