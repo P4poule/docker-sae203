@@ -44,7 +44,7 @@ socket.on('startGame', ({ initialFood, initialSnakes }) => {
     countdownActive = true;
 
     countdownTimer = setInterval(() => {
-        if (!countdownActive) { // Ajout pour éviter un compte à rebours actif après la fin
+        if (!countdownActive) {
             clearInterval(countdownTimer);
             return;
         }
@@ -93,16 +93,21 @@ socket.on('gameOver', (winner) => {
     } else {
         gameOverMessage = "Tu as perdu !";
     }
+
+    // Réinitialisation du jeu
+    resetGame();
 });
 
-socket.on('playerDisconnected', () => {
+// Réinitialisation des variables globales
+function resetGame() {
+    snakes = [];
+    food = {};
     playing = false;
+    countdown = 3;
     countdownActive = false;
+    gameOverMessage = "";
     clearInterval(countdownTimer);
-    statusEl.innerText = "L'autre joueur s'est déconnecté. Partie terminée.";
-    menuEl.style.display = 'block';
-    canvas.style.display = 'none';
-});
+}
 
 // Boucle de dessin
 function gameLoop() {
@@ -130,6 +135,12 @@ function gameLoop() {
         ctx.textBaseline = 'middle';
         const text = countdown > 0 ? countdown.toString() : 'GO';
         ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+        // Afficher la couleur du joueur
+        ctx.font = '40px Arial';
+        ctx.fillStyle = playerIndex === 0 ? 'green' : 'blue';
+        const playerColor = playerIndex === 0 ? "Tu es Vert" : "Tu es Bleu";
+        ctx.fillText(playerColor, canvas.width / 2, canvas.height / 2 + 60);
     }
 
     // Fin de partie
@@ -139,19 +150,28 @@ function gameLoop() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(gameOverMessage, canvas.width / 2, canvas.height / 2);
+        return; // Arrêter la boucle après la fin de partie
     }
 
-    if (playing || countdownActive || gameOverMessage) {
+    if (playing || countdownActive) {
         requestAnimationFrame(gameLoop);
     }
 }
 
-// Touches
+// Gestion des touches
+let lastMoveTime = 0;
+const moveCooldown = 100; // Temps minimum entre deux mouvements (en ms)
+
 document.addEventListener('keydown', e => {
     if (!playing || playerIndex === null) return;
+
+    const now = Date.now();
+    if (now - lastMoveTime < moveCooldown) return; // Ignorer si trop rapide
+    lastMoveTime = now;
+
     const map = {
-        'z':'Up', 's':'Down', 'q':'Left', 'd':'Right',
-        'ArrowUp':'Up', 'ArrowDown':'Down', 'ArrowLeft':'Left', 'ArrowRight':'Right'
+        'z': 'Up', 's': 'Down', 'q': 'Left', 'd': 'Right',
+        'ArrowUp': 'Up', 'ArrowDown': 'Down', 'ArrowLeft': 'Left', 'ArrowRight': 'Right'
     };
     const direction = map[e.key];
     if (direction) {
