@@ -101,17 +101,30 @@ function gameLoop() {
         });
     });
 
-    // Compte à rebours
+    // Affichage pendant le compte à rebours
     if (countdownActive) {
-        ctx.fillStyle = 'black';
-        ctx.font = '80px Arial';
+        // 1. Afficher "Tu es Vert" ou "Tu es Bleu"
+        ctx.fillStyle = playerIndex === 0 ? 'green' : 'blue';
+        ctx.font = '40px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        const text = countdown > 0 ? countdown.toString() : 'GO';
-        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+        ctx.fillText(
+            playerIndex === 0 ? 'Tu es VERT' : 'Tu es BLEU',
+            canvas.width / 2,
+            canvas.height / 2 - 100 // un peu au-dessus du chiffre du chrono
+        );
+
+        // 2. Afficher le chrono ("3", "2", "1", "GO")
+        ctx.fillStyle = 'black';
+        ctx.font = '80px Arial';
+        ctx.fillText(
+            countdown > 0 ? countdown.toString() : 'GO',
+            canvas.width / 2,
+            canvas.height / 2
+        );
     }
 
-    // Fin de partie
+    // Affichage de "Tu as gagné" / "Tu as perdu"
     if (!playing && gameOverMessage) {
         ctx.fillStyle = 'black';
         ctx.font = '60px Arial';
@@ -124,6 +137,7 @@ function gameLoop() {
         requestAnimationFrame(gameLoop);
     }
 }
+
 
 // Touches
 document.addEventListener('keydown', e => {
