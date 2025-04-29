@@ -94,9 +94,6 @@ socket.on('gameOver', (winner) => {
         gameOverMessage = "Tu as perdu !";
     }
 
-    // Réinitialisation du jeu
-    resetGame();
-
     // Continuer d'afficher l'état final
     requestAnimationFrame(gameLoop);
 });
@@ -129,6 +126,22 @@ function gameLoop() {
             ctx.fillRect(seg.x * scale, seg.y * scale, scale, scale);
         });
     });
+
+    // Afficher le compte à rebours
+    if (countdownActive) {
+        ctx.fillStyle = 'black';
+        ctx.font = '80px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const text = countdown > 0 ? countdown.toString() : 'GO';
+        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+        // Afficher la couleur du joueur
+        ctx.font = '40px Arial';
+        ctx.fillStyle = playerIndex === 0 ? 'green' : 'blue';
+        const playerColor = playerIndex === 0 ? "Tu es Vert" : "Tu es Bleu";
+        ctx.fillText(playerColor, canvas.width / 2, canvas.height / 2 + 60);
+    }
 
     // Afficher le message de fin de partie
     if (!playing && gameOverMessage) {
