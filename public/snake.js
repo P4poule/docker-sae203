@@ -96,6 +96,9 @@ socket.on('gameOver', (winner) => {
 
     // Réinitialisation du jeu
     resetGame();
+
+    // Continuer d'afficher l'état final
+    requestAnimationFrame(gameLoop);
 });
 
 // Réinitialisation des variables globales
@@ -106,7 +109,7 @@ function resetGame() {
     countdown = 3;
     countdownActive = false;
     gameOverMessage = "";
-    clearInterval(countdownTimer);
+    clearInterval(countdownTimer); // Arrêter le compte à rebours
 }
 
 // Boucle de dessin
@@ -127,32 +130,16 @@ function gameLoop() {
         });
     });
 
-    // Compte à rebours
-    if (countdownActive) {
-        ctx.fillStyle = 'black';
-        ctx.font = '80px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        const text = countdown > 0 ? countdown.toString() : 'GO';
-        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-
-        // Afficher la couleur du joueur
-        ctx.font = '40px Arial';
-        ctx.fillStyle = playerIndex === 0 ? 'green' : 'blue';
-        const playerColor = playerIndex === 0 ? "Tu es Vert" : "Tu es Bleu";
-        ctx.fillText(playerColor, canvas.width / 2, canvas.height / 2 + 60);
-    }
-
-    // Fin de partie
+    // Afficher le message de fin de partie
     if (!playing && gameOverMessage) {
         ctx.fillStyle = 'black';
         ctx.font = '60px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(gameOverMessage, canvas.width / 2, canvas.height / 2);
-        return; // Arrêter la boucle après la fin de partie
     }
 
+    // Continuer la boucle uniquement si le jeu est en cours ou si le compte à rebours est actif
     if (playing || countdownActive) {
         requestAnimationFrame(gameLoop);
     }
