@@ -103,27 +103,33 @@ io.on('connection', (socket) => {
 
     socket.on('joinRoom', (roomCode) => {
         socket.join(roomCode);
-
+    
         if (!rooms[roomCode]) {
             rooms[roomCode] = { players: [], snakes: [], food: createFood(), interval: null };
         }
-
+    
         rooms[roomCode].players.push(socket.id);
-
+    
         if (rooms[roomCode].players.length === 2) {
             rooms[roomCode].snakes = createInitialSnakes();
+    
+            // Envoyer aux clients pour qu'ils fassent le compte à rebours visuellement
             io.to(roomCode).emit('startGame', {
                 initialFood: rooms[roomCode].food,
                 initialSnakes: rooms[roomCode].snakes
             });
-
-            rooms[roomCode].interval = setInterval(() => {
-                updateRoom(roomCode);
-            }, 150);
+    
+            // Ne pas bouger tout de suite. Attendre 4 secondes avant de lancer updateRoom
+            setTimeout(() => {
+                rooms[roomCode].interval = setInterval(() => {
+                    updateRoom(roomCode);
+                }, 150);
+            }, 4000);  // 4 secondes pour laisser le compte à rebours terminer ("3 2 1 GO")
         } else {
             socket.emit('waiting');
         }
     });
+    
 
     socket.on('whoAmI', ({ roomCode }) => {
         const room = rooms[roomCode];
