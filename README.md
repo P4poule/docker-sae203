@@ -62,7 +62,7 @@ Si le port 8023 est déjà occupé, vous pouvez :
 
   Modifier la commande de lancement :
   ```bash
-    docker run -d -p 8024:8023 snake-multi
+  docker run -d -p 8024:8023 snake-multi
   ```
 
 Puis accédez au jeu via :
@@ -72,12 +72,12 @@ Puis accédez au jeu via :
 
 Pour arrêter le conteneur :
   ```bash
-  docker stop <[ID_CONTAINER] ou [nom_container]>
+docker stop <[ID_CONTAINER] ou [nom_container]>
 ```
   
 Pour lister les conteneurs en cours d'exécution :
   ```bash
-  docker ps
+docker ps
 ```
 
 ## Amusez-vous bien avec notre Snake multijoueur ! �🐍
