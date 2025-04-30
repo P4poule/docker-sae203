@@ -9,7 +9,9 @@ Pour commencer, nous devons créer une image Docker de notre jeu. Cette image co
 
 **Commande à exécuter :**
 
-```bash docker build -t snake-multi .```
+```bash 
+docker build -t snake-multi .
+```
 
 **Explications :**
 
