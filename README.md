@@ -27,12 +27,16 @@ Une fois l'image construite, nous pouvons démarrer le jeu :
 
 Commande :
 
-```bash docker run -d -p 8023:8023 snake-multi ```
+```bash 
+docker run -d -p 8023:8023 snake-multi
+```
 
 
 ** Si vous avez modifier des fichiers faites :**
 
-```bash docker build -t snake-multi . ```
+```bash 
+docker build -t snake-multi .
+```
 
 
 Options :
@@ -55,7 +59,9 @@ Si le port 8023 est déjà occupé, vous pouvez :
   Choisir un autre port (par exemple 8024)
 
   Modifier la commande de lancement :
-    ```bash docker run -d -p 8024:8023 snake-multi```
+    ```bash 
+    docker run -d -p 8024:8023 snake-multi
+    ```
 
 Puis accédez au jeu via :
   ```http://di-docker:8023```
@@ -63,9 +69,13 @@ Puis accédez au jeu via :
 ## � Astuce
 
 Pour arrêter le conteneur :
-  ```bash docker stop <[ID_CONTAINER] ou [nom_container]>```
+  ```bash 
+  docker stop <[ID_CONTAINER] ou [nom_container]>
+```
   
 Pour lister les conteneurs en cours d'exécution :
-  ```bash docker ps ```
+  ```bash 
+  docker ps
+```
 
 ## Amusez-vous bien avec notre Snake multijoueur ! �🐍
