@@ -61,8 +61,9 @@ Si le port 8023 est déjà occupé, vous pouvez :
   Choisir un autre port (par exemple 8024)
 
   Modifier la commande de lancement :
-    ```bash 
-    docker run -d -p 8024:8023 snake-multi
+    ```bash
+    
+       docker run -d -p 8024:8023 snake-multi
     ```
 
 Puis accédez au jeu via :
